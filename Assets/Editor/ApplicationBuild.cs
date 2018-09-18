@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using UnityEditor;
 
@@ -6,11 +7,7 @@ public static class ApplicationBuild
 {
     private static List<string> _levels;
     private static BuildOptions _buildOptions = BuildOptions.None;
-
-    private static string[] _debugScenes = new[]
-    {
-        "Assets/Scenes/Debug/DebugScene.unity",
-    };
+    private static readonly string debugSceneDirectory = $"./Assets/Scenes/Debug";
 
     public static void AndroidBuild()
     {
@@ -24,13 +21,15 @@ public static class ApplicationBuild
 
     private static void ResolveCommandLineArgs()
     {
-        foreach (var command in System.Environment.GetCommandLineArgs())
+        var commands = System.Environment.GetCommandLineArgs();
+        foreach (var command in commands)
         {
             switch (command)
             {
                 case "-development":
                     _buildOptions = BuildOptions.Development;
-                    _levels.AddRange(_debugScenes);
+                    var debugScenes = Directory.GetFiles(debugSceneDirectory, "*.unity", SearchOption.TopDirectoryOnly);
+                    _levels.AddRange(debugScenes);
                     break;
             }
         }
