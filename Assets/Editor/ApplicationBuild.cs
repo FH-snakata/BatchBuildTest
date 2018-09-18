@@ -1,18 +1,25 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEditor;
 
 public static class ApplicationBuild
 {
+    private static List<string> _levels;
     private static BuildOptions _buildOptions = BuildOptions.None;
+
+    private static string[] _debugScenes = new[]
+    {
+        "Assets/Scenes/DebugScene.unity",
+    };
 
     public static void AndroidBuild()
     {
-        var levels = EditorBuildSettings.scenes
+        _levels = EditorBuildSettings.scenes
             .Where(scene => scene.enabled)
             .Select(scene => scene.path)
-            .ToArray();
+            .ToList();
         ResolveCommandLineArgs();
-        BuildPipeline.BuildPlayer(levels, "./application.apk", BuildTarget.Android, _buildOptions);
+        BuildPipeline.BuildPlayer(_levels.ToArray(), "./application.apk", BuildTarget.Android, _buildOptions);
     }
 
     private static void ResolveCommandLineArgs()
@@ -23,6 +30,7 @@ public static class ApplicationBuild
             {
                 case "-development":
                     _buildOptions = BuildOptions.Development;
+                    _levels.AddRange(_debugScenes);
                     break;
             }
         }
