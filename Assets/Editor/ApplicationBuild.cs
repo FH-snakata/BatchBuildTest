@@ -9,7 +9,7 @@ public static class ApplicationBuild
 
     private static string[] _debugScenes = new[]
     {
-        "Assets/Scenes/DebugScene.unity",
+        "Assets/Scenes/Debug/DebugScene.unity",
     };
 
     public static void AndroidBuild()
